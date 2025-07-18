@@ -1,0 +1,4 @@
+REQUIREMENTS:
+SQLite3
+PyMySQP
+mysql-connector-python
