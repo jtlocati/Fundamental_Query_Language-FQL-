@@ -9,11 +9,11 @@ def DB_NAME(DataBase_Name):
     
 #shows what orentation of db this is
 def DB_LOCATION(Location):
-    if Location.upper == "LOCAL":
+    if Location.upper() == "LOCAL":
         return "LOCAL"
     elif Location.uppper == "WORKBENCH":
         return "WORKBENCH"
-    elif(Location.upper == "FLASK"):
+    elif(Location.upper() == "FLASK"):
         return "FLASK"
     else:
         return ValueError(f"----ERROR---- The command: 'DB.BDLOCATION({Location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WOEKBENCH'")
@@ -21,9 +21,9 @@ def DB_LOCATION(Location):
 
 #weather the user is using an SQL or SQLite application
 def SQL_TYPE(Type):
-    if Type.upper == "SQLite":
+    if Type.upper() == "SQLite":
         return"lite"
-    elif Type.upper == "SQL":
+    elif Type.upper() == "SQL":
 
         return ValueError(f"----ERROR----\n THE VALUE OF 'DB.SQL_TYPE({type})' CANNOT BE IDENTIFYED\n MUST BE OF VALUE 'SQL'  OR 'SQLite'")
     
