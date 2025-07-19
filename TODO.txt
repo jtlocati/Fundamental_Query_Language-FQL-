@@ -1,5 +1,7 @@
 fillout the projects.toml
 begin readme
+BD.py
+    -valueerror - > raise valueerror
 code for .CRUD
 code for .TABLE_EDIT
 code for .AUTH
