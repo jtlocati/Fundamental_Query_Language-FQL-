@@ -5,12 +5,12 @@ from flask import g
 
 "--------------The Command of 'CRUD' Is invalad and must be followed with a CRUD command--------------"
 
-if DB.DB_LOCATION == "LOCAL":
-    db = DB.DB_INITALIZATION_LOCAL
+if DB.DB_LOCATION() == "LOCAL":
+    conn, cursor = DB.DB_INITALIZATION_LOCAL()
+    cursor = conn.cursor()
 else:
-    db = DB.DB_INITALIZATION_WORKBENCH
+    db, cursor = DB.DB_INITALIZATION_WORKBENCH()
 
-cursor = db.cursor()
 
 def INSERT_INTO(table, cols, values):
     if len(cols) != len(values):
@@ -18,9 +18,9 @@ def INSERT_INTO(table, cols, values):
     #holds values for %s / ?
     pers = []
     for _ in range(len(values)):
-        if DB.SQL_TYPE == "SQL":
+        if DB.SQL_TYPE() == "SQL":
             Placeholders = ", ".join(["%s"] *  len(values))
-        elif DB.SQL_TYPE == "LITE":
+        elif DB.SQL_TYPE() == "LITE":
             Placeholders = ", ".join(["?"] *  len(values))
         else:
             raise ValueError(f"----ERROR----\nthe statment of 'INSERT_INTO({table}, {cols}, {values}) is not in correct format\n check values again and rerun")
@@ -28,8 +28,8 @@ def INSERT_INTO(table, cols, values):
     col_str = ", ".join(cols)
     query = (f"INSERT INTO {table} ({col_str}) values ({Placeholders})")
     cursor.execute(query, values)
-    if DB.DB_LOCATION == "LOCAL":
-        db.commit()
+    if DB.DB_LOCATION() == "LOCAL":
+        conn.commit()
     else:
         db.commit()
 

@@ -10,19 +10,32 @@ WORKBENCH_PASS = ""
 def get_DB_NAME(DataBase_Name):
     return DataBase_Name   
 
-
+def ADD_DB_LOCATION(location):
+    if location.upper() == "LOCAL":
+        return "LOCAL"
+    elif location.upper() == "WORKBENCH":
+        return "WORKBENCH"
+    else:
+        raise ValueError(f"----ERROR----\nThe command: 'DB.ADD_DB_LOCATION({location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WORKBENCH'")
 #shows what orentation of db this is
-def DB_LOCATION(Location):
+def DB_LOCATION(Location = ADD_DB_LOCATION):
     if Location.upper() == "LOCAL":
         return "LOCAL"
     elif Location.uppper == "WORKBENCH":
         return "WORKBENCH"
     else:
         raise ValueError(f"----ERROR---- The command: 'DB.BDLOCATION({Location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WOEKBENCH'")
-    
+
+def ADD_SQLTYPE(type):
+    if type.upper() == "SQLite":
+        return "LITE"
+    elif type.upper() == "SQL":
+        return "SQL"
+    else:
+        raise ValueError(f"----ERROR----\nThe command: 'DB.ADD_SQLTYPE({type})' cannot be intrepreted.\n current values are: 'SQL' or 'SQLite'") 
 
 #weather the user is using an SQL or SQLite application, to be used in hardcode
-def SQL_TYPE(Type):
+def SQL_TYPE(Type = ADD_SQLTYPE):
     if Type.upper() == "SQLite":
         return"LITE"
     elif Type.upper() == "SQL":
@@ -54,13 +67,16 @@ def DB_INITALIZATION_LOCAL(DATABASE = get_DB_NAME):
     
     elif DB_LOCATION == "LOCAL" and ISFLASK == False:
         conn = sqlite3.connect(DATABASE)
-        return conn.cursor()
+        cursor = conn.cursor()
+        return conn, cursor
     
     elif DB_LOCATION == "LOCAL" and ISFLASK == True:
         if 'db' not in g:
             g.db = sqlite3.connect(DATABASE)
         db = g.db
-        return db.cursor()
+        conn = g.db
+        cursor = db.cursor()
+        return conn, cursor
     else:
         raise ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")
 
@@ -76,6 +92,7 @@ def DB_INITALIZATION_WORKBENCH():
             database = get_DB_NAME
         )
         cursor = db.cursor()
+        return db, cursor
 
     elif DB_LOCATION == "WORKBENCH" and ISFLASK == True:
         if 'db' not in g:
@@ -85,7 +102,9 @@ def DB_INITALIZATION_WORKBENCH():
                 password = WORKBENCH_PASS,
                 database = get_DB_NAME
             )
-        return g.db
+            db = g.db
+            cursor = db.cursor()
+        return g.db, cursor
     else:
         raise ValueError(f"----ERROR----\nThe input in method:'DB_INFO_WORKBENCH()' is invalid\n check your values within: 'GET_WORKBENCH_INFO'and please ensure that the 'ISFLASK()' method is filled out properly")
 
