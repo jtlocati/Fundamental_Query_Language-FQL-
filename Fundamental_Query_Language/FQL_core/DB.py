@@ -18,16 +18,17 @@ def DB_LOCATION(Location):
     elif Location.uppper == "WORKBENCH":
         return "WORKBENCH"
     else:
-        return ValueError(f"----ERROR---- The command: 'DB.BDLOCATION({Location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WOEKBENCH'")
+        raise ValueError(f"----ERROR---- The command: 'DB.BDLOCATION({Location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WOEKBENCH'")
     
 
 #weather the user is using an SQL or SQLite application, to be used in hardcode
 def SQL_TYPE(Type):
     if Type.upper() == "SQLite":
-        return"lite"
+        return"LITE"
     elif Type.upper() == "SQL":
-
-        return ValueError(f"----ERROR----\n THE VALUE OF 'DB.SQL_TYPE({type})' CANNOT BE IDENTIFYED\n MUST BE OF VALUE 'SQL'  OR 'SQLite'")
+        return "SQL"
+    else:
+        raise ValueError(f"----ERROR----\n THE VALUE OF 'DB.SQL_TYPE({type})' CANNOT BE IDENTIFYED\n MUST BE OF VALUE 'SQL'  OR 'SQLite'")
     
 def ISFLASK(Type):
     if Type.upper() == "FLASK":
@@ -49,7 +50,7 @@ def GET_WORKBENCH_INFO(HOST, USER_NAME, PASSWORD):
 def DB_INITALIZATION_LOCAL(DATABASE = get_DB_NAME):
 
     if DB_LOCATION != "LOCAL":
-        return ValueError(f"----ERROR----\nThe command: 'DB_INITALIZATION_WORKBENCH()' is not needed fot the data type of: {DB_LOCATION}")
+         raise ValueError(f"----ERROR----\nThe command: 'DB_INITALIZATION_WORKBENCH()' is not needed fot the data type of: {DB_LOCATION}")
     
     elif DB_LOCATION == "LOCAL" and ISFLASK == False:
         conn = sqlite3.connect(DATABASE)
@@ -61,11 +62,11 @@ def DB_INITALIZATION_LOCAL(DATABASE = get_DB_NAME):
         db = g.db
         return db.cursor()
     else:
-        ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")
+        raise ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")
 
 def DB_INITALIZATION_WORKBENCH():
     if DB_LOCATION == "LOCAL":
-        return ValueError(f"----ERROR----\nThe command: 'DB_INITALIZATION_WORKBENCH()' is not needed fot the data type of: {DB_LOCATION}")
+        raise ValueError(f"----ERROR----\nThe command: 'DB_INITALIZATION_WORKBENCH()' is not needed fot the data type of: {DB_LOCATION}")
     
     elif DB_LOCATION == "WORKBENCH" and ISFLASK == False:
         db = mysql.connector.connect(
@@ -86,7 +87,7 @@ def DB_INITALIZATION_WORKBENCH():
             )
         return g.db
     else:
-        ValueError(f"----ERROR----\nThe input in method:'DB_INFO_WORKBENCH()' is invalid\n check your values within: 'GET_WORKBENCH_INFO'and please ensure that the 'ISFLASK()' method is filled out properly")
+        raise ValueError(f"----ERROR----\nThe input in method:'DB_INFO_WORKBENCH()' is invalid\n check your values within: 'GET_WORKBENCH_INFO'and please ensure that the 'ISFLASK()' method is filled out properly")
 
 def close_connection(exception):
     db = g.pop('db', None)
