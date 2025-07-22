@@ -5,7 +5,9 @@ from flask import g
 
 "--------------The Command of 'CRUD' Is invalad and must be followed with a CRUD command--------------"
 
-if DB.DB_LOCATION() == "LOCAL":
+
+#INITALIZATION of both cursor and db.(condition) varibles
+if DB.USE_DB_LOCATION() == "LOCAL":
     conn, cursor = DB.DB_INITALIZATION_LOCAL()
     cursor = conn.cursor()
 else:
@@ -18,9 +20,9 @@ def INSERT_INTO(table, cols, values):
     #holds values for %s / ?
     pers = []
     for _ in range(len(values)):
-        if DB.SQL_TYPE() == "SQL":
+        if DB.ADD_SQLTYPE() == "SQL":
             Placeholders = ", ".join(["%s"] *  len(values))
-        elif DB.SQL_TYPE() == "LITE":
+        elif DB.ADD_SQLTYPE() == "LITE":
             Placeholders = ", ".join(["?"] *  len(values))
         else:
             raise ValueError(f"----ERROR----\nthe statment of 'INSERT_INTO({table}, {cols}, {values}) is not in correct format\n check values again and rerun")
@@ -28,10 +30,12 @@ def INSERT_INTO(table, cols, values):
     col_str = ", ".join(cols)
     query = (f"INSERT INTO {table} ({col_str}) values ({Placeholders})")
     cursor.execute(query, values)
-    if DB.DB_LOCATION() == "LOCAL":
+    if DB.USE_DB_LOCATION() == "LOCAL":
         conn.commit()
+        conn.close()
     else:
         db.commit()
+        db.close()
 
 
 

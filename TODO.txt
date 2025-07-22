@@ -1,13 +1,11 @@
 fillout the projects.toml
 begin readme
-BD.py
-    -valueerror - > raise valueerror
 code for .CRUD
 code for .TABLE_EDIT
 code for .AUTH
 code for .DCG
 code for .CONNECT
 code for .SEARCH
-code for .ANAL
+code for .ANALISYS
 code for .DEF
 code for .CONFIRM

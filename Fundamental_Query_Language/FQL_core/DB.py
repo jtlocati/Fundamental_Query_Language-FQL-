@@ -6,27 +6,60 @@ WORKBENCH_HOST =""
 WORKBENCH_USERNAME = ""
 WORKBENCH_PASS = ""
 
+DB_LOCATION = ""
+
+SQL_TYPE = ""
+
+ISFLASK = ""
+
+
+
+
+#DB NAME BLOCK
+#when 
+DB_NAME = ""
+
 #holds name for SQL database
 def get_DB_NAME(DataBase_Name):
-    return DataBase_Name   
+    global DB_NAME
+    DB_NAME = DataBase_Name
+
+def USE_DB_NAME(DATA = DB_NAME):
+    return DB_NAME
+    
+
+
+
+
+
+#DB LOCATION BLOCK:
 
 def ADD_DB_LOCATION(location):
-    if location.upper() == "LOCAL":
-        return "LOCAL"
-    elif location.upper() == "WORKBENCH":
-        return "WORKBENCH"
-    else:
-        raise ValueError(f"----ERROR----\nThe command: 'DB.ADD_DB_LOCATION({location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WORKBENCH'")
+    global DB_LOCATION
+
+    DB_LOCATION = location.upper()
+
 #shows what orentation of db this is
-def DB_LOCATION(Location = ADD_DB_LOCATION):
+def USE_DB_LOCATION(Location = DB_LOCATION):
     if Location.upper() == "LOCAL":
         return "LOCAL"
-    elif Location.uppper == "WORKBENCH":
+    elif Location == "WORKBENCH":
         return "WORKBENCH"
     else:
         raise ValueError(f"----ERROR---- The command: 'DB.BDLOCATION({Location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WOEKBENCH'")
+    
 
-def ADD_SQLTYPE(type):
+
+
+#SQL TYPE BLOCK
+
+def GET_SQL_TYPE(type):
+    global SQL_TYPE
+
+    SQL_TYPE = type
+
+
+def ADD_SQLTYPE(type = SQL_TYPE):
     if type.upper() == "SQLite":
         return "LITE"
     elif type.upper() == "SQL":
@@ -34,21 +67,25 @@ def ADD_SQLTYPE(type):
     else:
         raise ValueError(f"----ERROR----\nThe command: 'DB.ADD_SQLTYPE({type})' cannot be intrepreted.\n current values are: 'SQL' or 'SQLite'") 
 
-#weather the user is using an SQL or SQLite application, to be used in hardcode
-def SQL_TYPE(Type = ADD_SQLTYPE):
-    if Type.upper() == "SQLite":
-        return"LITE"
-    elif Type.upper() == "SQL":
-        return "SQL"
-    else:
-        raise ValueError(f"----ERROR----\n THE VALUE OF 'DB.SQL_TYPE({type})' CANNOT BE IDENTIFYED\n MUST BE OF VALUE 'SQL'  OR 'SQLite'")
+
+#ISFLASK BLOCK
+
+def ADD_ISFLASK(flask):
+    global ISFLASK
+
+    ISFLASK = flask
+
     
-def ISFLASK(Type):
+def USE_ISFLASK(Type = ISFLASK):
     if Type.upper() == "FLASK":
         return True
     elif Type.upper() == "OTHER":
         return False
     
+
+
+
+#INITALIZATION BLOCK
     
 #TIE THE FOLLOWIING TOW DEFS INTO LOCATION DEF -> CHECK IF POSSIBLE
 # _LOCAL AND _WORKBENCH INITTALIZATION OF DB'S
@@ -56,11 +93,15 @@ def ISFLASK(Type):
 #is equivelent to get_DB
 
 def GET_WORKBENCH_INFO(HOST, USER_NAME, PASSWORD):
+    global WORKBENCH_HOST
+    global WORKBENCH_USERNAME
+    global WORKBENCH_PASS
+
     WORKBENCH_HOST = HOST
     WORKBENCH_USERNAME = USER_NAME
     WORKBENCH_PASS = PASSWORD
 
-def DB_INITALIZATION_LOCAL(DATABASE = get_DB_NAME):
+def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
 
     if DB_LOCATION != "LOCAL":
          raise ValueError(f"----ERROR----\nThe command: 'DB_INITALIZATION_WORKBENCH()' is not needed fot the data type of: {DB_LOCATION}")
@@ -89,7 +130,7 @@ def DB_INITALIZATION_WORKBENCH():
             host = WORKBENCH_HOST,
             user = WORKBENCH_USERNAME,
             password = WORKBENCH_PASS,
-            database = get_DB_NAME
+            database = DB_NAME
         )
         cursor = db.cursor()
         return db, cursor
@@ -100,7 +141,7 @@ def DB_INITALIZATION_WORKBENCH():
                 host = WORKBENCH_HOST,
                 user = WORKBENCH_USERNAME,
                 password = WORKBENCH_PASS,
-                database = get_DB_NAME
+                database = DB_NAME
             )
             db = g.db
             cursor = db.cursor()
