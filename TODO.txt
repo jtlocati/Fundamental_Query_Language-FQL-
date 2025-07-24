@@ -1,7 +1,6 @@
 fillout the projects.toml
 begin readme
 code for .CRUD
-code for .TABLE_EDIT
 code for .AUTH
 code for .DCG
 code for .CONNECT

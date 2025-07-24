@@ -59,7 +59,7 @@ def GET_SQL_TYPE(type):
     SQL_TYPE = type
 
 
-def ADD_SQLTYPE(type = SQL_TYPE):
+def USE_SQLTYPE(type = SQL_TYPE):
     if type.upper() == "SQLite":
         return "LITE"
     elif type.upper() == "SQL":

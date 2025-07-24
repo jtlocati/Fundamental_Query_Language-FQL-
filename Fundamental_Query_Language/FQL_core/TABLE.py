@@ -34,6 +34,9 @@ def CREATE(Table_name, col_name, specifications):
         db.commit()
         db.close()
 
+
+        
+
 def DROP(table_name):
     query = (f"DROP TABLE IF EXSITS {table_name}")
 
