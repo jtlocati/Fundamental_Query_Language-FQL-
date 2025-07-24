@@ -7,6 +7,7 @@ else:
     db, cursor = DB.DB_INITALIZATION_WORKBENCH()
 
 def CREATE(Table_name, col_name, specifications):
+    Table_name = Table_name.lower()
 
     query = (f"CREATE TABLE {Table_name}(")
 
@@ -16,7 +17,7 @@ def CREATE(Table_name, col_name, specifications):
     for value in specifications:
         length = len(value)
         #if the specifications of the index row are not specified then it will default to a id row
-        if value == 0 and length >= 0:
+        if value == value[0] and length >= 0:          
             value = "INT AUTO_INCREMENT PRIMARY KEY"
         if length >= 0:
             value = "NOT NULL"
@@ -24,6 +25,7 @@ def CREATE(Table_name, col_name, specifications):
         
     for col, spec in zip(col_name, specifications):
         query += (f"{col} {spec},")
+    query += ");"
     
     if DB.USE_DB_LOCATION() == "LOCAL":
         cursor.execute(query)
