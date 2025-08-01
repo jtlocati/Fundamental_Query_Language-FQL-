@@ -75,7 +75,7 @@ def ADD_ISFLASK(flask):
 
     ISFLASK = flask
 
-    
+#adds ISFLASK value to be implemented within the def's of WORKBENCH/LOCAL
 def USE_ISFLASK(Type = ISFLASK):
     if Type.upper() == "FLASK":
         return True
@@ -109,6 +109,7 @@ def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
     elif DB_LOCATION == "LOCAL" and ISFLASK == False:
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
+        #conn.row_factory = sqlite3.Row
         return conn, cursor
     
     elif DB_LOCATION == "LOCAL" and ISFLASK == True:
@@ -117,6 +118,7 @@ def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
         db = g.db
         conn = g.db
         cursor = db.cursor()
+        #conn.row_factory = sqlite3.Row
         return conn, cursor
     else:
         raise ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")

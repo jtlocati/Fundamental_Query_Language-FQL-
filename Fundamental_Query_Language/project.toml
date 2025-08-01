@@ -1,4 +1,20 @@
-REQUIREMENTS:
-SQLite3
-PyMySQP
-mysql-connector-python
+[project]
+name = "fundemental-query-language"
+version = "0.1.0"
+description = "Fundemental Query Language (FQL)"
+authors = [
+    { name = "Jet Locati", email = "Jetlocati4922@gmail.com" }
+]
+readme = "readme.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+
+dependencies = [
+    "sqlite3",  # Note: this is included with Python, no need to list usually
+    "PyMySQL",
+    "mysql-connector-python"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

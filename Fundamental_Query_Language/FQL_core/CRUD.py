@@ -130,5 +130,129 @@ def SELECT_SORTED_ADVANCED(Table, cols, new_col, new_col_specifications, Group, 
         db.close()
     
     return result
+
+#.DELETE BLOCK
+
+def ROW_DELETE(Table, Specification):
+
+    if len(Specification) >= 0:
+        raise ValueError (f"----ERROR----\n The method of 'ROW_DELETE({Table}, {Specification})' is not valid\n3rd 'Specification' value must be filled out")
+    
+    query = (f"DELETE FROM {Table} WHERE {Specification}")
+
+    cursor.execute(query)
+
+    if DB.USE_DB_LOCATION == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()
+
+
+def RETURN_DELETED(Table, col, condition):
+    query = (f"SELECT * FROM {Table} WHERE {condition}")
+    cursor.execute(query)
+    ret = cursor.fetchall()
+
+    query_two = (f"DELETE FROM {Table} WHERE {condition}")
+    cursor.execute(query_two)
+
+    if DB.USE_DB_LOCATION() == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()
+
+    return ret
+
+
+def CLEAR_TABLE(Table):
+    query = (f"DELETE FROM {Table}")
+    cursor.execute(query)
+
+    if DB.USE_DB_LOCATION() == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()
+
+
+#GPT walthrough needed, CONTINUE AT LATER TIME 
+def JOIN_DELETE(Primary, Target_tables, join_on, Clause):
+
+    query = ""
+    joiner = ""
+
+    if DB.USE_SQLTYPE() == "LITE" and (Target_tables > 2 or join_on > 2):
+        raise ValueError(f"----ERROR----\nThe function of 'CRUD.JOIN_DELETE({Primary}, {Target_tables}, {join_on})' cannot be satisfied\nSQLite cannot handle the joining of more than 2 tables")
+    elif len(Target_tables) != len(join_on):
+        raise ValueError(f"----ERROR----\nThe ststment: 'CRUD.JOIN_DELETE({Primary}, {Target_tables}, {join_on})")
+
+    if len(Target_tables) == 2:
+        """query = (f"SELECT {Target_tables[0]} FROM {Target_tables[0]} JOIN {Target_tables[1]} ON {Target_tables[0]}.{join_on[0]} = {Target_tables[1]}.{join_on[1]} WHERE {Clause}")"""
+        #make dynamic for multipule tables
+    else:
+        for i in range(len(Target_tables)):
+            joiner += (f"JOIN {Target_tables[i]} ON {Target_tables[i]}.{join_on[i]}")
+
+
+    
+
+    return "filler"
+
+def DELETE_COL(Table, cols_to_drop):
+    DCols = ""
+    RCols = ""
+
+    #query = (f"ALTER TABLE {Table}\nDROP COLUMN {col}")
+    #cursor.execute(query)
+
+    if DB.USE_SQLTYPE() == "SQL":
+        for value in cols_to_drop:
+            DCols += (F"DROP COLUMN {value},")
+        DCols = DCols[:-1]
+        query = (f"ALTER TABLE {Table} ")
+        query += DCols
+
+    else:
+        #returns col info
+        cursor.execute(f"PRAGMA table_info({Table})")
+        table_info = cursor.fetchall()
+
+        #FIND WAYS TO ELEIMINATE THIS SECTION
+        print("[DEBUG] Table Info:", table_info)
+        print("[DEBUG] First Row Type:", type(table_info[0]) if table_info else "Empty")
+        exit()
+
+        for col in table_info:
+            col_name = col[1]
+            col_type = col[2]
+            if col_name not in cols_to_drop:
+                RCols += col_name
+        RCols = RCols.rstrip(", ")
+    
+
+    if DB.USE_DB_LOCATION() == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()
+
+
+def LIMIT_DELETE(Table, Order, Limit):
+    return "filler"
+
+def DELETE_IN(Table, col, condition):
+    return "filler"
+
+def MULTI_DELETE(Table, col, values):
+    return "filler"
+
+
+    
  
     
