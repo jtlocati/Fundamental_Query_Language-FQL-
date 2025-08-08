@@ -118,7 +118,10 @@ def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
         db = g.db
         conn = g.db
         cursor = db.cursor()
+
+        #for join syntax if needed, could present dynamic issues.
         #conn.row_factory = sqlite3.Row
+        
         return conn, cursor
     else:
         raise ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")

@@ -243,8 +243,57 @@ def DELETE_COL(Table, cols_to_drop):
         db.close()
 
 
-def LIMIT_DELETE(Table, Order, Limit):
-    return "filler"
+def LIMIT_DELETE(Table, Condition, Group, Limit):
+
+
+
+    #refine
+    # non-negotiables:   
+        #Table. Group or conditioion, 
+    if DB.USE_SQLTYPE() == "SQL":
+        if Group == "" or Group.upper() == "NONE":
+            query = (f"DELETE FROM {Table} WHERE {Condition} LIMIT {Limit}")
+
+        elif Condition.upper() == "NONE" or len(Condition) == 0:
+
+            Order = Group.split(",")[1].lstrip()
+            query = (f"DELETE FROM {Table} ORDER BY {Group} {Order.upper()} LIMIT {Limit} ")
+        
+        elif ((Condition.upper() != "NONE" or len(Condition) != 0) or (Group != "" or Group.upper() != "NONE")):
+            Order = Group.split(",")[1].lstrip()
+            query = (f"DELETE FROM {Table} WHERE {Condition} ORDER BY {Group} {Order.upper()} LIMIT {Limit}")
+
+        else:
+            raise ValueError(f"----ERROR----\n The input of 'CRUD.LIMIT_DELETE({Table}, {Condition}, {Group}, {Limit})' is invalid, please check values again and rerun")
+        
+    else:
+        if len(Group) > 0:
+            Order = Group.split(",")[1].lstrip()
+    
+        query = (f"DELETE FROM {Table} WHERE rowid IN")
+
+        if len(Condition) == 0 or Condition.upper() == "NONE":
+            addition = (f"SELECT rowid FROM {Table} ORDER BY {Group} {Order.upper()} LIMIT {Limit}")
+        
+        elif len(Group) == 0 or Group.upper() == "NONE":
+            addition = (f"SELECT rowid FROM {Table} WHERE {Condition} LIMIT {Limit}")
+        
+        elif (len(Condition) != 0 or Condition.upper() != "NONE" or len(Group) != 0 or Group.upper() == "NONE"):
+            addition = (f"SELECT rowid FROM {Table} WHERE {Condition} ORDER BY {Group} {Order.upper()}")
+
+        else:
+            raise ValueError(f"----ERROR----\n The input of 'CRUD.LIMIT_DELETE({Table}, {Condition}, {Group}, {Limit})' is invalid, please check values again and rerun")
+    
+        query += (f"( {addition} )")
+    
+    if DB.USE_DB_LOCATION == "SQL":
+        db.commit()
+        db.close()
+    else:
+        conn.commit()
+        conn.close()
+
+    
 
 def DELETE_IN(Table, col, condition):
     return "filler"
