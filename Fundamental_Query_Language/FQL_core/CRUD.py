@@ -150,7 +150,7 @@ def ROW_DELETE(Table, Specification):
         db.close()
 
 
-def RETURN_DELETED(Table, col, condition):
+def RETURN_DELETED(Table, condition):
     query = (f"SELECT * FROM {Table} WHERE {condition}")
     cursor.execute(query)
     ret = cursor.fetchall()
@@ -212,7 +212,7 @@ def DELETE_COL(Table, cols_to_drop):
 
     if DB.USE_SQLTYPE() == "SQL":
         for value in cols_to_drop:
-            DCols += (F"DROP COLUMN {value},")
+            DCols += (f"DROP COLUMN {value},")
         DCols = DCols[:-1]
         query = (f"ALTER TABLE {Table} ")
         query += DCols
@@ -233,8 +233,9 @@ def DELETE_COL(Table, cols_to_drop):
             if col_name not in cols_to_drop:
                 RCols += col_name
         RCols = RCols.rstrip(", ")
-    
 
+        cursor.execute(query)
+    
     if DB.USE_DB_LOCATION() == "LOCAL":
         conn.commit()
         conn.close()
@@ -244,8 +245,6 @@ def DELETE_COL(Table, cols_to_drop):
 
 
 def LIMIT_DELETE(Table, Condition, Group, Limit):
-
-
 
     #refine
     # non-negotiables:   
@@ -285,21 +284,32 @@ def LIMIT_DELETE(Table, Condition, Group, Limit):
             raise ValueError(f"----ERROR----\n The input of 'CRUD.LIMIT_DELETE({Table}, {Condition}, {Group}, {Limit})' is invalid, please check values again and rerun")
     
         query += (f"( {addition} )")
+
+        cursor.execute(query)
     
-    if DB.USE_DB_LOCATION == "SQL":
+    if DB.USE_DB_LOCATION == "WORKBENCH":
         db.commit()
         db.close()
     else:
         conn.commit()
         conn.close()
-
     
 
-def DELETE_IN(Table, col, condition):
-    return "filler"
+def DELETE_IN(Table, col, values):
+    query = (f"DELETE FROM {Table} WHERE {col} IN {values}")
 
-def MULTI_DELETE(Table, col, values):
-    return "filler"
+    cursor.execute(query)
+
+    if DB.USE_DB_LOCATION == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()
+
+#Scrapped till future need
+#def MULTI_DELETE(Table, col, values):
+
 
 
     
