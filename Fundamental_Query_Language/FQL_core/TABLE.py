@@ -42,8 +42,9 @@ def CREATE(Table_name, col_name, specifications):
 def DROP(table_name):
     query = (f"DROP TABLE IF EXSITS {table_name}")
 
+    cursor.execute(query)
+
     if DB.USE_DB_LOCATION() == "LOCAL":
-        cursor.execute(query)
         conn.commit()
         conn.close()
     else:
@@ -51,5 +52,31 @@ def DROP(table_name):
         db.commit()
         db.close()
 
-def ALTER(idk_yet):
-    return "filler"
+
+def ALTER_COL(function, col, table):
+    if len(table) == 0:
+        table = DB.DEFAULT_TABLE()
+
+    query =(f"ALTER TABLE {table} {function} {col}")
+    
+    cursor.execute(query)
+    
+    if DB.USE_DB_LOCATION() == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()
+
+def RENAME_COL(table, col_name, new_name):
+    if len(table) == 0:
+        table = DB.DEFAULT_TABLE()
+    query = (f"ALTER TABLE {table} RENAME COLUMN {col_name} TO {new_name}")
+    cursor.execute(query)
+
+    if DB.USE_DB_LOCATION() == "LOCAL":
+        conn.commit()
+        conn.close()
+    else:
+        db.commit()
+        db.close()

@@ -19,6 +19,9 @@ ISFLASK = ""
 #when 
 DB_NAME = ""
 
+def DEFAULT_TABLE(Table):
+    return Table
+
 #holds name for SQL database
 def get_DB_NAME(DataBase_Name):
     global DB_NAME
