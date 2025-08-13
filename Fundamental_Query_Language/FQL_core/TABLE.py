@@ -50,3 +50,6 @@ def DROP(table_name):
         cursor.execute(query)
         db.commit()
         db.close()
+
+def ALTER(idk_yet):
+    return "filler"

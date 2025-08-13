@@ -109,6 +109,7 @@ def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
     elif DB_LOCATION == "LOCAL" and ISFLASK == False:
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
+        #for join syntax, could present dynamic issues if another interpreture is in use by the user.
         #conn.row_factory = sqlite3.Row
         return conn, cursor
     
@@ -121,7 +122,7 @@ def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
 
         #for join syntax if needed, could present dynamic issues.
         #conn.row_factory = sqlite3.Row
-        
+
         return conn, cursor
     else:
         raise ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")
