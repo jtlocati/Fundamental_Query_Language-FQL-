@@ -1,6 +1,12 @@
 import mysql.connector 
-from flask import g
 import sqlite3
+#prevent crash form a NULL flask import
+try:
+    from flask import Flask, g
+except ImportError:
+    g= None
+from pathlib import Path
+
 
 WORKBENCH_HOST =""
 WORKBENCH_USERNAME = ""
@@ -12,6 +18,17 @@ SQL_TYPE = ""
 
 ISFLASK = ""
 
+PATH = ""
+
+#gets path for SQLite functions (SQLITE ONLY)
+def ADD_DB_PATH(pathUSE):
+    global PATH
+    PATH = pathUSE
+
+def USE_DB_PATH():
+    return USE_DB_PATH
+
+
 
 
 
@@ -19,10 +36,11 @@ ISFLASK = ""
 #when 
 DB_NAME = ""
 
+
 def DEFAULT_TABLE(Table):
     return Table
 
-#holds name for SQL database
+#holds name for SQL database (SQL ONLY)
 def get_DB_NAME(DataBase_Name):
     global DB_NAME
     DB_NAME = DataBase_Name
@@ -32,10 +50,8 @@ def USE_DB_NAME(DATA = DB_NAME):
     
 
 
-
-
-
 #DB LOCATION BLOCK:
+#GET RID OF THIS FUNCTION, UNESSARCARY
 
 def ADD_DB_LOCATION(location):
     global DB_LOCATION
@@ -43,10 +59,11 @@ def ADD_DB_LOCATION(location):
     DB_LOCATION = location.upper()
 
 #shows what orentation of db this is
+#THINK ABOUT DELTEING THIS DUE TO SQL AND SQLite seperate
 def USE_DB_LOCATION(Location = DB_LOCATION):
     if Location.upper() == "LOCAL":
         return "LOCAL"
-    elif Location == "WORKBENCH":
+    elif Location.upper() == "MYSQL":
         return "WORKBENCH"
     else:
         raise ValueError(f"----ERROR---- The command: 'DB.BDLOCATION({Location})' cannot be intrepreted.\n current values are: 'LOCAL' or 'WOEKBENCH'")
@@ -103,33 +120,60 @@ def GET_WORKBENCH_INFO(HOST, USER_NAME, PASSWORD):
     WORKBENCH_USERNAME = USER_NAME
     WORKBENCH_PASS = PASSWORD
 
+def lite_parent_confirm(path_):
+    try:
+        p = Path(path_)
+    except:
+        raise ValueError(f"----ERROR----\nThe PATH input of 'DB.ADD_DB_PATH()' is needed to initaliza a SQLite function")
+    if p.parent and not p.parent.exists:
+        p.parent.mkdir(parents=True, exist_ok=True)
+
+def db_initalization_helper():
+    lite_parent_confirm(PATH)
+    conn = sqlite3.connect(PATH)
+    
+    conn.execute("PRAGMA foreign_keys = ON;")
+    conn.execute("PRAGMA journal_mode = WAL;")   # better concurrency
+    conn.execute("PRAGMA synchronous = NORMAL;")
+
+    return conn
+
+
 
 #add SQL compatability to local initalization
 def DB_INITALIZATION_LOCAL(DATABASE = DB_NAME):
 
     if DB_LOCATION != "LOCAL":
-         raise ValueError(f"----ERROR----\nThe command: 'DB_INITALIZATION_WORKBENCH()' is not needed fot the data type of: {DB_LOCATION}")
-    
-    elif DB_LOCATION == "LOCAL" and ISFLASK == False:
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-        #for join syntax, could present dynamic issues if another interpreture is in use by the user.
-        #conn.row_factory = sqlite3.Row
-        return conn, cursor
-    
-    elif DB_LOCATION == "LOCAL" and ISFLASK == True:
+        raise ValueError(
+            "----ERROR----\n"
+            "'DB_INITIALIZATION_LOCAL()' is only for DB_LOCATION='LOCAL' "
+            f"(current: {DB_LOCATION})"
+        )
+    if USE_SQLTYPE != "LITE":
+        raise ValueError(
+            "----ERROR----\n"
+            "DB_INITIALIZATION_LOCAL requires SQLite (USE_SQLTYPE='LITE'), "
+            f"got: {USE_SQLTYPE}"
+        )
+
+    # Non-Flask path
+    if not ISFLASK:
+        conn = db_initalization_helper(DATABASE)
+        return conn, conn.cursor()
+
+    # Flask path (one connection per request)
+    if ISFLASK:
+        if g is None:
+            raise RuntimeError(
+                "ISFLASK=True but Flask isn't available. Install Flask or set ISFLASK=False."
+            )
         if 'db' not in g:
-            g.db = sqlite3.connect(DATABASE)
-        db = g.db
+            g.db = db_initalization_helper(DATABASE)
         conn = g.db
-        cursor = db.cursor()
+        return conn, conn.cursor()
 
-        #for join syntax if needed, could present dynamic issues.
-        #conn.row_factory = sqlite3.Row
 
-        return conn, cursor
-    else:
-        raise ValueError(f"----ERROR----\nThe input in method:'DB_INITALIZATION_LOCAL({DATABASE})' is invalid\n check your values and please ensure that the 'ISFLASK()' method is filled out properly")
+
 
 def DB_INITALIZATION_WORKBENCH():
     if DB_LOCATION == "LOCAL":
@@ -146,6 +190,8 @@ def DB_INITALIZATION_WORKBENCH():
         return db, cursor
 
     elif DB_LOCATION == "WORKBENCH" and ISFLASK == True:
+        if g == None:
+            raise RuntimeError(f"----ERROR----\nThe import of: 'from flask import g' was not found.\nMake sure pip is insatlled on your device and run the command of: 'pip install flask' ")
         if 'db' not in g:
             g.db = mysql.connector.connect(
                 host = WORKBENCH_HOST,
@@ -153,8 +199,7 @@ def DB_INITALIZATION_WORKBENCH():
                 password = WORKBENCH_PASS,
                 database = DB_NAME
             )
-            db = g.db
-            cursor = db.cursor()
+            cursor = g.db.cursor()
         return g.db, cursor
     else:
         raise ValueError(f"----ERROR----\nThe input in method:'DB_INFO_WORKBENCH()' is invalid\n check your values within: 'GET_WORKBENCH_INFO'and please ensure that the 'ISFLASK()' method is filled out properly")
