@@ -1,6 +1,6 @@
-# FQL — Flexible Query Layer
+# FQL — Fundemental Query Language
 
-FQL (Flexible Query Layer) is a lightweight Python extension that enables natural language querying over structured datasets such as CSV files and SQLite databases.
+FQL (Fundemental Query Language) is a lightweight Python extension that enables natural language querying over structured datasets such as CSV files and SQLite databases.
 
 Instead of writing raw SQL, users can ask questions in plain English. FQL parses intent, generates structured SQL, executes it safely, and returns results.
 
@@ -32,7 +32,7 @@ This project demonstrates:
 bash
 pip install fql
 Install Locally
-git clone https://github.com/yourusername/fql.git
+git clone https://github.com/jtlocati/Fundemental_Query_Language-FQL-.git
 cd fql
 pip install -e .
 Quick Start
