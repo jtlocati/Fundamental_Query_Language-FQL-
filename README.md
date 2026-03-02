@@ -29,7 +29,7 @@ This project demonstrates:
 
 ### Install from PyPI
 
-```bash
+bash
 pip install fql
 Install Locally
 git clone https://github.com/yourusername/fql.git
