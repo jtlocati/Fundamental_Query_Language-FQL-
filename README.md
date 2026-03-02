@@ -10,32 +10,33 @@ Designed for small to medium datasets, educational use, and rapid prototyping.
 
 ## Why FQL?
 
-- Removes SQL friction for non-technical users
-- Works locally on CSV or SQLite
-- Easy integration with Flask applications
-- Lightweight and modular architecture
-- Designed for transparency (inspect generated SQL)
+- Removes SQL friction for non-technical users  
+- Works locally on CSV or SQLite  
+- Easy integration with Flask applications  
+- Lightweight and modular architecture  
+- Designed for transparency (inspect generated SQL)  
 
 This project demonstrates:
-- Query parsing
-- NLP → SQL translation
-- Dynamic database binding
-- Systems design and modular Python packaging
+
+- Query parsing  
+- NLP → SQL translation  
+- Dynamic database binding  
+- Systems design and modular Python packaging  
 
 ---
 
 ## Installation
 
+### Install from PyPI
+
 ```bash
 pip install fql
-
-Or locally:
-
+Install Locally
 git clone https://github.com/yourusername/fql.git
 cd fql
 pip install -e .
 Quick Start
-1. Query a CSV file
+1. Query a CSV File
 from fql import FQL
 
 engine = FQL(
@@ -46,6 +47,8 @@ engine = FQL(
 result = engine.query("Show me the top 5 highest revenue entries")
 print(result)
 2. Use with SQLite
+from fql import FQL
+
 engine = FQL(
     db_location="database.db",
     is_flask=False
@@ -64,19 +67,17 @@ Parameter	Type	Description
 db_location	str	Path to CSV or SQLite database
 is_flask	bool	Enables Flask-specific behavior
 Architecture Overview
-
 Natural Language Input
-↓
+        ↓
 Intent Parsing
-↓
+        ↓
 Query Builder
-↓
+        ↓
 SQL Generation
-↓
+        ↓
 Execution Engine
-↓
+        ↓
 Result Formatter
-
 Example Queries
 
 "Show the first 10 rows"
@@ -132,7 +133,7 @@ Web UI dashboard
 
 Contributing
 
-Pull requests welcome.
+Pull requests are welcome.
 
 License
 
@@ -141,7 +142,7 @@ MIT License
 
 ---
 
-# DOCUMENTATION.md
+# `DOCUMENTATION.md`
 
 ```markdown
 # FQL Technical Documentation
@@ -150,12 +151,12 @@ MIT License
 
 FQL follows a modular pipeline architecture:
 
-1. Input Processing
-2. Intent Detection
-3. Query Structuring
-4. SQL Generation
-5. Execution
-6. Output Formatting
+1. Input Processing  
+2. Intent Detection  
+3. Query Structuring  
+4. SQL Generation  
+5. Execution  
+6. Output Formatting  
 
 Each stage is isolated for extensibility.
 
@@ -168,10 +169,11 @@ Each stage is isolated for extensibility.
 Central interface for users.
 
 Responsibilities:
-- Load dataset
-- Manage configuration
-- Route queries
-- Handle output formatting
+
+- Load dataset  
+- Manage configuration  
+- Route queries  
+- Handle output formatting  
 
 ---
 
@@ -181,16 +183,14 @@ Converts natural language into structured intent.
 
 Example output:
 
+```json
 {
   "operation": "aggregate",
   "function": "average",
   "column": "salary",
   "group_by": "department"
 }
-
----
-
-### Query Builder
+Query Builder
 
 Transforms structured intent into valid SQL.
 
@@ -199,86 +199,96 @@ Example:
 SELECT department, AVG(salary)
 FROM table
 GROUP BY department;
-
----
-
-### Executor
+Executor
 
 Handles:
-- SQLite execution
-- CSV → temporary SQLite conversion (if applicable)
-- Safe parameter injection
-- Result retrieval
 
----
+SQLite execution
 
-## 3. CSV Handling
+CSV → temporary SQLite conversion (if applicable)
+
+Safe parameter injection
+
+Result retrieval
+
+3. CSV Handling
 
 When a CSV is provided:
-1. File is loaded
-2. Converted into in-memory SQLite table
-3. Queries executed against temporary schema
+
+File is loaded
+
+Converted into an in-memory SQLite table
+
+Queries executed against the temporary schema
 
 This maintains SQL consistency across input types.
 
----
+4. Flask Mode
 
-## 4. Flask Mode
+If ISFLASK=True:
 
-If `ISFLASK=True`:
-- Engine avoids reinitializing connections
-- Designed for request lifecycle management
-- Optimized for repeated queries
+Engine avoids reinitializing connections
 
----
+Designed for request lifecycle management
 
-## 5. Error Handling
+Optimized for repeated queries
+
+5. Error Handling
 
 FQL handles:
-- Invalid column names
-- Unsupported operations
-- Malformed natural language
-- Execution errors
+
+Invalid column names
+
+Unsupported operations
+
+Malformed natural language
+
+Execution errors
 
 Errors return structured responses.
 
----
+6. Extensibility
 
-## 6. Extensibility
+You can extend FQL by:
 
-You can extend:
+Adding new NLP intent rules
 
-- Add new NLP intent rules
-- Integrate transformer-based parsing
-- Add PostgreSQL backend
-- Add query plan inspection
+Integrating transformer-based parsing
 
----
+Adding a PostgreSQL backend
 
-## 7. Performance Considerations
+Adding query plan inspection
 
-Best for:
-- < 1M rows
-- Local development
-- Classroom environments
-- Rapid prototyping
+7. Performance Considerations
+
+Best suited for:
+
+< 1M rows
+
+Local development
+
+Classroom environments
+
+Rapid prototyping
 
 For large-scale systems, consider integrating a dedicated semantic parser with optimized SQL engines.
 
----
-
-## 8. Example Flow
+8. Example Flow
 
 Input:
-"Show average GPA grouped by major"
+
+Show average GPA grouped by major
 
 Parsed Intent:
+
 aggregate → avg(GPA) → group_by major
 
 Generated SQL:
+
 SELECT major, AVG(GPA)
 FROM dataset
 GROUP BY major;
 
 Result:
-Returned as pandas DataFrame
+
+Returned as a pandas DataFrame.
